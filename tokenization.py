@@ -23,7 +23,7 @@ import re
 import unicodedata
 import six
 import tensorflow as tf
-
+import json
 
 def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
   """Checks whether the casing config is consistent with the checkpoint name."""
@@ -124,12 +124,11 @@ def load_vocab(vocab_file):
   index = 0
   with tf.gfile.GFile(vocab_file, "r") as reader:
     while True:
-      token = convert_to_unicode(reader.readline())
-      if not token:
+      json_str = convert_to_unicode(reader.readline())
+      if not json_str:
         break
-      token = token.strip()
-      vocab[token] = index
-      index += 1
+      vocab = json.loads(json_str)
+      vocab = vocab['token_to_idx']
   return vocab
 
 
